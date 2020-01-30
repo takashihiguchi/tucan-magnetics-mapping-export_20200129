@@ -1,18 +1,21 @@
 # coding: utf-8
 
-#############################################################
+################################################################################################################
 # HOW TO USE 
 # This code exports a 2D cut of a 3D map for each of the (Bx, By, Bz) component
 # The origin is chosen such that z=0 corresponds to the planned center of MSL-MSR, 2.75m from the floor (See line 48)
-# If you want to chaange the cut conditions, edit around line 99.
+# If you want to change the cut conditions, edit around line 100.
 #  x_all: all the unique x included in the df_all, the data frame including all measured data  
 # idx_ucut: defines the index of x_all by which the x_cut is chosenm
 # z_cut_min, z_cut_max: define the range of z to select the subset of df_all to be plotted 
-
-#############################################################
+# You may need to play around with the parameters in lines 148-168 to optimiza the visibility of the plots.
+#
+# CAUTION
+# If there is too few data points, interpolation from line 121 will return an error saying 
+# "ValueError: zero-size array to reduction operation maximum which has no identity"
+################################################################################################################
 
 # ### Preamble
-
 import pandas as pd
 import numpy as np
 # get_ipython().magic(u'matplotlib notebook')
@@ -30,9 +33,7 @@ import numpy as np
 import scipy
 import scipy.interpolate as interp
 
-
 # ### Import data
-
 
 df1 = pd.read_csv('Mapping_0809_RUN1.csv')
 df2 = pd.read_csv('Mapping_0809_RUN2.csv')
@@ -52,7 +53,7 @@ df_all['z'] = df_all.v -1.25 +188.1 -275
 df_all['B_x'] = -df_all['B_u']
 df_all['B_y'] = -df_all['B_w']
 df_all['B_z'] = -df_all['B_v'] 
-# df_all['B_z'] = df_all['B_v'] ## previous version
+# df_all['B_z'] = df_all['B_v'] ## previous version, but it was found that the label on the porbe was mistaken 
 
 
 
@@ -75,7 +76,6 @@ x_min = np.min(df_all.x)
 z_min = np.min(df_all.z)
 y_min = np.min(df_all.y)
 
-
 # v_floors = df_all1.v.unique()
 v_all = df_all.v.unique()
 w_all = df_all.w.unique()
@@ -93,15 +93,14 @@ x_all = df_all.x.unique()
 # print len(x_all)
 # print len(y_all)
 
-
 # ### Make a cut with x=const., select the range of z, interpolate the subset of data
 
 # The original data is B_i(x,y,z) (i={x,y,z}), each of the three components is a three-dimensional function
 # In the following, a cut is obtained for x=c (const.), B_i(y,z|x=c)
 
-idx_ucut = 9 # set the index of x to make a cut
+idx_ucut = 1 # set the index of x to make a cut, can be 0 to 9
 x_cut=x_all[idx_ucut]
-z_cut_min = -50
+z_cut_min = -150
 z_cut_max = 200
 
 df_all_sub = df_all[(df_all.x==x_cut) & (df_all.z <= z_cut_max) & (df_all.z >= z_cut_min)] # select the subset of the data frame
