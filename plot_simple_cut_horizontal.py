@@ -98,10 +98,10 @@ x_all = df_all.x.unique()
 # The original data is B_i(x,y,z) (i={x,y,z}), each of the three components is a three-dimensional function
 # In the following, a cut is obtained for x=c (const.), B_i(y,z|x=c)
 
-idx_ucut = 1 # set the index of x to make a cut, can be 0 to 9
+idx_ucut = 3 # set the index of x to make a cut, can be 0 to 9
 x_cut=x_all[idx_ucut]
-z_cut_min = -150
-z_cut_max = 200
+z_cut_min = -180
+z_cut_max = 250
 
 df_all_sub = df_all[(df_all.x==x_cut) & (df_all.z <= z_cut_max) & (df_all.z >= z_cut_min)] # select the subset of the data frame
 # print df_all_sub.index.size
@@ -160,31 +160,28 @@ for axi in [ax4, ax5, ax6]:
     axi.xaxis.set_major_formatter(FormatStrFormatter('%d'))
     axi.yaxis.set_major_formatter(FormatStrFormatter('%d'))
                                   
-
     axi.set_xlabel('$\mathsf{z}$ (cm)', rotation=7, labelpad=10)
     axi.set_ylabel('$\mathsf{y}$ (cm)',  labelpad=15)
 
 ax6.set_zlim(-90,-275) # invert the z-axis direction for B_z, just for visualization purpose
     
 for yi in y_all:
-    ax4.plot(df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].z,df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].y, df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].B_x*100, '-', c='black', lw=.5)
-    ax6.plot(df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].z,df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].y, df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].B_z*100, '-', c='black', lw=.5)
+    ax4.plot(df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].z,df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].y, df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].B_x*100, '-', c='black', lw=.5)    
     ax5.plot(df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].z,df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].y, df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].B_y*100, '-', c='black', lw=.5)
-    
+    ax6.plot(df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].z,df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].y, df_all_sub.sort_values('z')[df_all_sub.sort_values('z').y==yi].B_z*100, '-', c='black', lw=.5)
 for zi in z_all:
     ax4.plot(df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].z,df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].y, df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].B_x*100, '-', c='black', lw=.5)
-    ax6.plot(df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].z,df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].y, df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].B_z*100, '-', c='black', lw=.5)
     ax5.plot(df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].z,df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].y, df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].B_y*100, '-', c='black', lw=.5)
+    ax6.plot(df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].z,df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].y, df_all_sub.sort_values('y')[df_all_sub.sort_values('y').z==zi].B_z*100, '-', c='black', lw=.5)
+    
 
+sc4_int = ax4.scatter(z_dense, y_dense, Bx_dense*100, c=np.concatenate(Bx_dense)*100, marker='.', lw=.1, cmap=cm.plasma)
+sc5_int = ax5.scatter(z_dense, y_dense, By_dense*100, c=np.concatenate(By_dense)*100, marker='.', lw=.1, cmap=cm.plasma)
+sc6_int = ax6.scatter(z_dense, y_dense, Bz_dense*100, c=np.concatenate(Bz_dense)*100, marker='.', lw=.1, cmap=cm.plasma)
 
-sc4_int = ax4.scatter(z_dense, y_dense, Bx_dense*100,  c=np.concatenate(Bx_dense)*100, marker='.', lw=.1, cmap=cm.plasma)
-sc5_int = ax6.scatter(z_dense, y_dense, Bz_dense*100,  c=np.concatenate(Bz_dense)*100, marker='.', lw=.1, cmap=cm.plasma)
-sc6_int = ax5.scatter(z_dense, y_dense, By_dense*100,  c=np.concatenate(By_dense)*100, marker='.', lw=.1, cmap=cm.plasma)
-
-sc4 = ax4.scatter(df_all_sub.z, df_all_sub.y, df_all_sub.B_x*100,c=df_all_sub.B_x*100, edgecolor='',marker='s', cmap=cm.plasma)
-sc5 = ax6.scatter(df_all_sub.z, df_all_sub.y, df_all_sub.B_z*100,c=df_all_sub.B_z*100, edgecolor='',marker='s', cmap=cm.plasma)
-sc6 = ax5.scatter(df_all_sub.z, df_all_sub.y, df_all_sub.B_y*100,c=df_all_sub.B_y*100, edgecolor='',marker='s', cmap=cm.plasma)
-
+sc4 = ax4.scatter(df_all_sub.z, df_all_sub.y, df_all_sub.B_x*100,c=df_all_sub.B_x*100, marker='s', cmap=cm.plasma)
+sc5 = ax5.scatter(df_all_sub.z, df_all_sub.y, df_all_sub.B_y*100,c=df_all_sub.B_y*100, marker='s', cmap=cm.plasma)
+sc6 = ax6.scatter(df_all_sub.z, df_all_sub.y, df_all_sub.B_z*100,c=df_all_sub.B_z*100, marker='s', cmap=cm.plasma)
 
 ax4.set_title('$\mathsf{B_x}$') 
 ax4.set_zlabel('$\mathsf{B_x\,(\mu T)}$', rotation=180, labelpad=10)
@@ -199,24 +196,7 @@ fig2.suptitle('$\mathsf{x=%.2f\,cm}$'%(x_cut))
 
 fig2.tight_layout(pad=3,rect=[0, 0, 1, 0.99])# plt.colorbar(sc, ax=ax4)
 
-
-fig2.savefig('plots_MSR_center/cut_x_%.2f_z_[%.2f, %.2f].png' %(x_cut, z_cut_min, z_cut_max))
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
+fname = 'plots_MSR_center/cut_x_%.2f_z_[%.2f, %.2f].png' %(x_cut, z_cut_min, z_cut_max)
+fig2.savefig(fname)
 
 
