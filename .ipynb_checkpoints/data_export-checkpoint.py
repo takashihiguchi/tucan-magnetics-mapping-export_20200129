@@ -102,8 +102,8 @@ x_cut_min = np.min(x_all)
 x_cut_max = np.max(x_all)
 y_cut_min = np.min(y_all)
 y_cut_max = np.max(y_all)
-z_cut_min = -200
-z_cut_max = 400
+z_cut_min = -100
+z_cut_max = 300
 
 df_all_sub = df_all[(df_all.x <= x_cut_max) & (df_all.x >= x_cut_min)
                     & (df_all.y <= y_cut_max) & (df_all.y >= y_cut_min)
